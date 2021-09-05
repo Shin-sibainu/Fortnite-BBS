@@ -1,0 +1,38 @@
+html {
+  background: #E1F0F0;
+}
+
+header {
+  text-align: center;
+  padding: 2px 6px;
+  background: #3B5998;
+}
+
+.headerTitle {
+  font-size: 26px;
+  color: white;
+  font-weight: 600;
+}
+
+.topButtonsArea {
+  padding: 18px 18px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.topButton {
+  padding: 6px 12px;
+  margin-right: 10px;
+  border: 1px solid grey;
+  -webkit-box-shadow: 0 1px 1px 1px #3b3b3b;
+          box-shadow: 0 1px 1px 1px #3b3b3b;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.topButton:hover {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+/*# sourceMappingURL=style.css.map */

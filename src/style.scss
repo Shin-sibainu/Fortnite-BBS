@@ -1,0 +1,34 @@
+html {
+    background: #E1F0F0;
+}
+
+//------header--------//
+header {
+    text-align: center;
+    padding: 2px 6px;
+    background: #3B5998;
+}
+
+
+.headerTitle {
+    font-size: 26px;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+}
+
+//-----topbuttonarea--------//
+.topButtonsArea {
+    padding: 18px 18px;
+    display: flex;
+}
+
+.topButton {
+    padding: 6px 12px;
+    margin-right: 10px;
+    border: 1px solid grey;
+    box-shadow: 0 1px 1px 1px rgb(59, 59, 59);
+    transition: all 0.4s;
+    &:hover {
+        box-shadow: none;
+    }
+}
