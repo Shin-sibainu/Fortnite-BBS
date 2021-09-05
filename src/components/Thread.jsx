@@ -1,10 +1,10 @@
 import React from "react";
 import { useState } from "react";
+// import { db } from "../firebase";
 
-function Thread({ name, threadFirstComment, threadid, title }) {
+function Thread({ name, threadFirstComment, title, timestamp }) {
   const [inputName, setInputName] = useState("");
   const [inputTextArea, setInputTextArea] = useState("");
-  console.log(name);
 
   const handleChange = (e) => {
     setInputName(e.target.value);
@@ -33,14 +33,14 @@ function Thread({ name, threadFirstComment, threadid, title }) {
     <div>
       <div className="thread">
         <strong>
-          <span id="threadnumber">No{threadid}:</span>
+          <span id="threadnumber">お題:</span>
           {title}
         </strong>
         <div className="threadComment">
           <p id="username">
             No.1 名前: <b> {name}</b>
             <span className="threadInfo">
-              2021/08/26(木)14:29
+              {new Date(timestamp?.toDate()).toLocaleString()}
               <a href="http://shincode.info">[返信]</a>
             </span>
           </p>

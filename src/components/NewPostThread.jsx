@@ -2,8 +2,9 @@ import React from "react";
 import { useState } from "react";
 import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
+import firebase from "@firebase/app-compat";
 
-function NewPostThread({ threadList, setThreadList }) {
+function NewPostThread() {
   const [inputName, setInputName] = useState("");
   const [inputTitle, setInputTitle] = useState("");
   const [inputComment, setInputComment] = useState("");
@@ -25,21 +26,19 @@ function NewPostThread({ threadList, setThreadList }) {
     if (newThreadFormVailed()) {
       /* データベースに保存 */
       try {
-        const docRef = addDoc(collection(db, "threads"), {
-          threadid: threadList.length + 1,
+        addDoc(collection(db, "threads"), {
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           name: inputName,
           title: inputTitle,
           threadFirstComment: inputComment,
         });
-        console.log("Document written with ID: ", docRef.id);
+        setInputName("");
+        setInputTitle("");
+        setInputComment("");
       } catch (e) {
         console.log("Error adding document ", e);
       }
     }
-
-    setInputName("");
-    setInputTitle("");
-    setInputComment("");
   };
 
   const handleNameChange = (e) => {
@@ -81,7 +80,7 @@ function NewPostThread({ threadList, setThreadList }) {
                       onChange={handleTitleChange}
                       type="text"
                       name="sub"
-                      maxLength="12"
+                      maxLength="20"
                       className="titleInput"
                       value={inputTitle}
                     />
