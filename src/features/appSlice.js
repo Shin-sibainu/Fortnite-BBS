@@ -8,13 +8,13 @@ export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    addThread: (state, action) => {
+    selectThread: (state, action) => {
       state.threadId = action.payload.threadId;
     },
   },
 });
 
-export const { addThread } = appSlice.actions;
+export const { selectThread } = appSlice.actions;
 export const selectThreadId = (state) => state.app.threadId;
 
 export default appSlice.reducer;

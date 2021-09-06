@@ -1,10 +1,25 @@
 import React from "react";
 import { useState } from "react";
-// import { db } from "../firebase";
+import { db } from "../firebase";
+import firebase from "@firebase/app-compat";
+import { useDispatch, useSelector } from "react-redux";
+import { selectThread, selectThreadId } from "../features/appSlice";
+import { useCollection } from "react-firebase-hooks/firestore";
+// import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 
-function Thread({ name, threadFirstComment, title, timestamp }) {
+function Thread({ id, name, threadFirstComment, title, timestamp }) {
   const [inputName, setInputName] = useState("");
   const [inputTextArea, setInputTextArea] = useState("");
+  const dispatch = useDispatch();
+  const threadId = useSelector(selectThreadId); //フォーカスしたときにしか呼ばれないよね。
+  const [replyInfo] = useCollection(
+    id &&
+      db
+        .collection("threads")
+        .doc(id)
+        .collection("reply")
+        .orderBy("timestamp", "asc")
+  );
 
   const handleChange = (e) => {
     setInputName(e.target.value);
@@ -21,11 +36,30 @@ function Thread({ name, threadFirstComment, title, timestamp }) {
       return false;
     }
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formVailed()) {
       /* データベースに返信したデータを送る */
-      console.log("submit");
+      threadId &&
+        db.collection("threads").doc(threadId).collection("reply").add({
+          name: inputName,
+          replyComment: inputTextArea,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      setInputName("");
+      setInputTextArea("");
+    }
+  };
+
+  const handleFocus = () => {
+    /* どのthreadのなのかを指定 */
+    if (id) {
+      dispatch(
+        selectThread({
+          threadId: id,
+        })
+      );
     }
   };
 
@@ -47,21 +81,26 @@ function Thread({ name, threadFirstComment, title, timestamp }) {
           <p id="threadContentArea">
             <span id="threadContent">{threadFirstComment}</span>
           </p>
-          {/* ここから返信コメントを複数生成 */}
-          {/*           {replyList.map((reply, index) => (
-            <div key={index}>
-              <p id="username">
-                No.{index + 2} 名前: <b> {reply.name}</b>
-                <span className="threadInfo">
-                  2021/08/26(木)14:29
-                  <a href="http://shincode.info">[返信]</a>
-                </span>
-              </p>
-              <p id="threadContentArea">
-                <span id="threadContent">{reply.replyComment}</span>
-              </p>
-            </div>
-          ))} */}
+          {/* threadIdによって表示させる内容を変える必要がある。 */}
+          {/* threadId4ならthreadId4のreplyInfoをmapで繰り返し表示させる */}
+          {id &&
+            replyInfo?.docs.map((reply, index) => {
+              const { name, replyComment, timestamp } = reply.data();
+              return (
+                <div key={reply.id}>
+                  <p id="username">
+                    No.{index + 2} 名前: <b> {name}</b>
+                    <span className="threadInfo">
+                      {new Date(timestamp?.toDate()).toLocaleString()}
+                      <a href="http://shincode.info">[返信]</a>
+                    </span>
+                  </p>
+                  <p id="threadContentArea">
+                    <span id="threadContent">{replyComment}</span>
+                  </p>
+                </div>
+              );
+            })}
         </div>
         {/* 返信用フォーム */}
         <form onSubmit={handleSubmit}>
@@ -77,6 +116,7 @@ function Thread({ name, threadFirstComment, title, timestamp }) {
                     name="name"
                     maxLength="12"
                     className="nameInput"
+                    onFocus={handleFocus}
                   />
                 </td>
               </tr>
