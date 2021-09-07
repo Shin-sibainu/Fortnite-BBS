@@ -198,6 +198,10 @@ table {
   padding: 10px 10px 10px 0;
 }
 
+.dateText {
+  color: black !important;
+}
+
 .threadInfo {
   overflow-wrap: break-word;
   width: 100%;
@@ -208,6 +212,15 @@ table {
 #threadnumber {
   font-size: 90%;
   color: black;
+}
+
+.replyButton {
+  font-size: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4b78da;
+  text-decoration: underline;
 }
 
 /* pagnination area */

@@ -10,6 +10,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 function Thread({ id, name, threadFirstComment, title, timestamp }) {
   const [inputName, setInputName] = useState("");
   const [inputTextArea, setInputTextArea] = useState("");
+  const [replyToName, setReplyToName] = useState("");
   const [nameErrors, setNameErrors] = useState([]);
   const [textAreaErrors, setTextAreaErrors] = useState([]);
 
@@ -63,6 +64,7 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
     e.preventDefault();
     if (formVailed()) {
       /* データベースに返信したデータを送る */
+      /* 返信先を指定しているときはreplyToName: >>>宛名とともに保存する。 */
       threadId &&
         db.collection("threads").doc(threadId).collection("reply").add({
           name: inputName,
@@ -71,7 +73,8 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
         });
       setInputName("");
       setInputTextArea("");
-      /* １番上にスクロールする */
+
+      setReplyToName("");
     }
   };
 
@@ -86,6 +89,11 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
     }
   };
 
+  const handleReplyButton = (name) => {
+    /* 返信先宛名を設定 */
+    setReplyToName(name);
+  };
+
   return (
     <div>
       <div className="thread">
@@ -95,10 +103,17 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
         </strong>
         <div className="threadComment">
           <p id="username">
-            No.1 名前: <b> {name}</b>
+            1 名前: <b> {name}</b>
             <span className="threadInfo">
-              {new Date(timestamp?.toDate()).toLocaleString()}
-              <a href="http://shincode.info">[返信]</a>
+              <span className="dateText">
+                {new Date(timestamp?.toDate()).toLocaleString()}
+              </span>
+              <button
+                className="replyButton"
+                onClick={() => handleReplyButton(name)}
+              >
+                [返信]
+              </button>
             </span>
           </p>
           <p id="threadContentArea">
@@ -112,15 +127,26 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
               return (
                 <div key={reply.id}>
                   <p id="username">
-                    No.{index + 2} 名前: <b> {name}</b>
+                    {index + 2} 名前: <b> {name}</b>
                     <span className="threadInfo">
-                      {new Date(timestamp?.toDate()).toLocaleString()}
-                      <a href="http://shincode.info">[返信]</a>
+                      <span className="dateText">
+                        {new Date(timestamp?.toDate()).toLocaleString()}
+                      </span>
+                      <button
+                        className="replyButton"
+                        onClick={() => handleReplyButton(name)}
+                      >
+                        [返信]
+                      </button>
                     </span>
                   </p>
-                  <p id="threadContentArea">
-                    <span id="threadContent">{replyComment}</span>
-                  </p>
+                  <div id="threadContentArea">
+                    <span id="threadContent">
+                      {/* replyToNameに名前があれば、改行してリプライする */}
+                      {<div></div>}
+                      {replyComment}
+                    </span>
+                  </div>
                 </div>
               );
             })}
@@ -159,6 +185,9 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
                   {textAreaErrors && (
                     <span id="errorMessage">{textAreaErrors.errorMessage}</span>
                   )}
+                  <div className="replyToName">
+                    {replyToName ? replyToName + "さんへ返信します" : ""}
+                  </div>
                   <button className="submitButton">投稿</button>
                 </th>
               </tr>
