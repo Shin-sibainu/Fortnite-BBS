@@ -65,7 +65,7 @@ th, td {
 
 .textArea {
   height: 7em;
-  width: 440px;
+  width: 400px;
   padding: 3px;
 }
 
@@ -115,8 +115,11 @@ table {
     padding: 2px;
     font-size: 90%;
   }
-  .nameInput, .titleInput, .textArea {
+  .titleInput {
     width: 100% !important;
+  }
+  .nameInput, .textArea {
+    width: 71vw;
   }
   th, td {
     display: block;
@@ -205,5 +208,54 @@ table {
 #threadnumber {
   font-size: 90%;
   color: black;
+}
+
+/* pagnination area */
+.pageItem {
+  display: inline-block;
+}
+
+.paginateContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  margin-left: 2.2em;
+}
+
+.pageItem {
+  cursor: pointer;
+  padding: 1px 5px;
+}
+
+.pageItem a {
+  color: #4b78da;
+  text-decoration: underline;
+}
+
+.active {
+  cursor: default;
+}
+
+.active a {
+  color: #0e0e0e !important;
+  text-decoration: none;
+}
+
+.disabled {
+  cursor: default;
+}
+
+.disabled a {
+  color: #0e0e0e !important;
+  text-decoration: none;
+}
+
+#errorMessage {
+  margin-left: 10px;
+  font-weight: 700;
+  color: #f11515;
 }
 /*# sourceMappingURL=style.css.map */

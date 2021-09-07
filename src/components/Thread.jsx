@@ -10,6 +10,9 @@ import { useCollection } from "react-firebase-hooks/firestore";
 function Thread({ id, name, threadFirstComment, title, timestamp }) {
   const [inputName, setInputName] = useState("");
   const [inputTextArea, setInputTextArea] = useState("");
+  const [nameErrors, setNameErrors] = useState([]);
+  const [textAreaErrors, setTextAreaErrors] = useState([]);
+
   const dispatch = useDispatch();
   const threadId = useSelector(selectThreadId); //フォーカスしたときにしか呼ばれないよね。
   const [replyInfo] = useCollection(
@@ -30,11 +33,30 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
   };
 
   const formVailed = () => {
-    if (inputName.length !== 0 && inputTextArea.length !== 0) {
-      return true;
-    } else {
+    if (inputName.length === 0 && inputTextArea.length !== 0) {
+      setNameErrors({
+        errorMessage: "※未入力エラーです。",
+      });
+      setTextAreaErrors([]);
+    } else if (inputName.length !== 0 && inputTextArea.length === 0) {
+      setTextAreaErrors({
+        errorMessage: "※未入力エラーです。",
+      });
+      setNameErrors([]);
+    } else if (inputName.length === 0 && inputTextArea.length === 0) {
+      setNameErrors({
+        errorMessage: "※未入力エラーです。",
+      });
+      setTextAreaErrors({
+        errorMessage: "※未入力エラーです。",
+      });
       return false;
+    } else if (inputName.length !== 0 && inputTextArea.length !== 0) {
+      setNameErrors([]);
+      setTextAreaErrors([]);
+      return true;
     }
+    return false;
   };
 
   const handleSubmit = (e) => {
@@ -49,6 +71,7 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
         });
       setInputName("");
       setInputTextArea("");
+      /* １番上にスクロールする */
     }
   };
 
@@ -118,6 +141,9 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
                     className="nameInput"
                     onFocus={handleFocus}
                   />
+                  {nameErrors && (
+                    <span id="errorMessage">{nameErrors.errorMessage}</span>
+                  )}
                 </td>
               </tr>
               <tr>
@@ -130,6 +156,9 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
                     className="textArea"
                     value={inputTextArea}
                   ></textarea>
+                  {textAreaErrors && (
+                    <span id="errorMessage">{textAreaErrors.errorMessage}</span>
+                  )}
                   <button className="submitButton">投稿</button>
                 </th>
               </tr>

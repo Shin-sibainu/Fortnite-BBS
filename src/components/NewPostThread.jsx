@@ -4,7 +4,7 @@ import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import firebase from "@firebase/app-compat";
 
-function NewPostThread() {
+function NewPostThread({ threadAddRef, setPagenateInforList }) {
   const [inputName, setInputName] = useState("");
   const [inputTitle, setInputTitle] = useState("");
   const [inputComment, setInputComment] = useState("");
@@ -38,6 +38,16 @@ function NewPostThread() {
       } catch (e) {
         console.log("Error adding document ", e);
       }
+
+      /* 表示するリストを最初のoffsetに戻すとか */
+      setPagenateInforList({
+        offset: 0,
+        perPage: 5,
+      });
+      /* 上にスクロールする */
+      threadAddRef?.current?.scrollIntoView({
+        behavior: "smooth",
+      });
     }
   };
 

@@ -63,7 +63,7 @@ th, td {
 
 .textArea {
     height: 7em;
-    width: 440px;
+    width: 400px;
     padding: 3px;
 }
 
@@ -113,8 +113,12 @@ table {
     font-size: 90%;
 }
 
-.nameInput, .titleInput, .textArea {
+.titleInput {
     width: 100% !important;
+}
+
+.nameInput, .textArea {
+    width: 71vw;
 }
 
 th, td {
@@ -196,5 +200,47 @@ th, td {
 #threadnumber {
     font-size: 90%;
     color: black;
+}
+
+/* pagnination area */
+.pageItem {
+    display: inline-block;
+}
+
+.paginateContainer {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 2.2em;
+}
+
+.pageItem {
+    cursor: pointer;
+    padding: 1px 5px;
+    a{
+        color: #4b78da;
+        text-decoration: underline;
+    }
+}
+
+.active {
+    cursor: default;
+    a{
+        color: #0e0e0e !important;
+        text-decoration: none;
+    }
+}
+
+.disabled {
+    cursor: default;
+    a{
+        color: #0e0e0e !important;
+        text-decoration: none;
+    }
+}
+
+#errorMessage {
+    margin-left: 10px;
+    font-weight: 700;
+    color: #f11515;
 }
 
