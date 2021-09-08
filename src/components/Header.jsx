@@ -4,7 +4,7 @@ function Header() {
   return (
     <div>
       <header>
-        <div className="headerTitle">フォートナイト愚痴掲示板</div>
+        <div className="headerTitle">フォートナイト掲示板</div>
       </header>
     </div>
   );

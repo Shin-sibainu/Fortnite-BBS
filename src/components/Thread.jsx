@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import { db } from "../firebase";
 import firebase from "@firebase/app-compat";
@@ -13,6 +13,7 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
   const [replyToName, setReplyToName] = useState("");
   const [nameErrors, setNameErrors] = useState([]);
   const [textAreaErrors, setTextAreaErrors] = useState([]);
+  const replyFormRef = useRef(null);
 
   const dispatch = useDispatch();
   const threadId = useSelector(selectThreadId); //フォーカスしたときにしか呼ばれないよね。
@@ -65,6 +66,23 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
     if (formVailed()) {
       /* データベースに返信したデータを送る */
       /* 返信先を指定しているときはreplyToName: >>>宛名とともに保存する。 */
+      if (replyToName.length > 0) {
+        threadId &&
+          db
+            .collection("threads")
+            .doc(threadId)
+            .collection("reply")
+            .add({
+              name: inputName,
+              replyAddress: ">>" + replyToName,
+              replyComment: inputTextArea,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            });
+        setInputName("");
+        setInputTextArea("");
+        setReplyToName("");
+        return;
+      }
       threadId &&
         db.collection("threads").doc(threadId).collection("reply").add({
           name: inputName,
@@ -73,7 +91,6 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
         });
       setInputName("");
       setInputTextArea("");
-
       setReplyToName("");
     }
   };
@@ -92,6 +109,10 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
   const handleReplyButton = (name) => {
     /* 返信先宛名を設定 */
     setReplyToName(name);
+    /* 自動で返信欄へスクロール */
+    replyFormRef?.current?.scrollIntoView({
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -123,7 +144,8 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
           {/* threadId4ならthreadId4のreplyInfoをmapで繰り返し表示させる */}
           {id &&
             replyInfo?.docs.map((reply, index) => {
-              const { name, replyComment, timestamp } = reply.data();
+              const { name, replyComment, timestamp, replyAddress } =
+                reply.data();
               return (
                 <div key={reply.id}>
                   <p id="username">
@@ -142,8 +164,15 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
                   </p>
                   <div id="threadContentArea">
                     <span id="threadContent">
-                      {/* replyToNameに名前があれば、改行してリプライする */}
-                      {<div></div>}
+                      {/* 送信ボタンを押したかつreplyToNameに名前があれば、改行してリプライする */}
+                      {replyAddress && (
+                        <div
+                          className="replyAddress"
+                          style={{ marginBottom: 2 }}
+                        >
+                          {replyAddress}
+                        </div>
+                      )}
                       {replyComment}
                     </span>
                   </div>
@@ -152,7 +181,7 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
             })}
         </div>
         {/* 返信用フォーム */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} ref={replyFormRef}>
           <table className="replyTable">
             <tbody>
               <tr>
@@ -175,8 +204,12 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
               <tr>
                 <th colSpan="2">
                   このスレッドに書き込む
+                  <span className="replyToName">
+                    {replyToName ? "(To:" + replyToName + "さんへ)" : ""}
+                  </span>
                   <br />
                   <textarea
+                    placeholder={`>>${replyToName}さんへの返信`}
                     onChange={handleTextAreaChange}
                     name="comment"
                     className="textArea"
@@ -185,10 +218,8 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
                   {textAreaErrors && (
                     <span id="errorMessage">{textAreaErrors.errorMessage}</span>
                   )}
-                  <div className="replyToName">
-                    {replyToName ? replyToName + "さんへ返信します" : ""}
-                  </div>
                   <button className="submitButton">投稿</button>
+                  {/* <button className="replyCancel">返信解除</button> */}
                 </th>
               </tr>
             </tbody>

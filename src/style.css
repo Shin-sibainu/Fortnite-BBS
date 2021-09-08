@@ -271,4 +271,13 @@ table {
   font-weight: 700;
   color: #f11515;
 }
+
+/* reply */
+.replyAddress {
+  color: #2000d3;
+}
+
+.replyToName {
+  margin-left: 5px;
+}
 /*# sourceMappingURL=style.css.map */
