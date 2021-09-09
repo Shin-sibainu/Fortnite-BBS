@@ -67,6 +67,7 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
       /* データベースに返信したデータを送る */
       /* 返信先を指定しているときはreplyToName: >>>宛名とともに保存する。 */
       if (replyToName.length > 0) {
+        console.log(replyToName);
         threadId &&
           db
             .collection("threads")
@@ -113,6 +114,12 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
     replyFormRef?.current?.scrollIntoView({
       behavior: "smooth",
     });
+  };
+
+  const replyCancel = () => {
+    /* 返信を解除 */
+    console.log("a");
+    setReplyToName("");
   };
 
   return (
@@ -162,7 +169,7 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
                       </button>
                     </span>
                   </p>
-                  <div id="threadContentArea">
+                  <div id="threadContentArea" ref={replyFormRef}>
                     <span id="threadContent">
                       {/* 送信ボタンを押したかつreplyToNameに名前があれば、改行してリプライする */}
                       {replyAddress && (
@@ -181,7 +188,7 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
             })}
         </div>
         {/* 返信用フォーム */}
-        <form onSubmit={handleSubmit} ref={replyFormRef}>
+        <form onSubmit={handleSubmit}>
           <table className="replyTable">
             <tbody>
               <tr>
@@ -209,7 +216,7 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
                   </span>
                   <br />
                   <textarea
-                    placeholder={`>>${replyToName}さんへの返信`}
+                    placeholder={replyToName && `>>${replyToName}さんへの返信`}
                     onChange={handleTextAreaChange}
                     name="comment"
                     className="textArea"
@@ -218,8 +225,16 @@ function Thread({ id, name, threadFirstComment, title, timestamp }) {
                   {textAreaErrors && (
                     <span id="errorMessage">{textAreaErrors.errorMessage}</span>
                   )}
-                  <button className="submitButton">投稿</button>
-                  {/* <button className="replyCancel">返信解除</button> */}
+                  <div className="replyButtons">
+                    <button className="submitButton">投稿</button>
+                    <button
+                      type="button"
+                      className="replyCancel"
+                      onClick={replyCancel}
+                    >
+                      返信解除
+                    </button>
+                  </div>
                 </th>
               </tr>
             </tbody>

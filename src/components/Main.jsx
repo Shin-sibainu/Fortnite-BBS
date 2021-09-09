@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import ThreadArea from "./ThreadArea";
-import TopButtons from "./TopButtons";
+import TopButtons from "./buttons/TopButtons";
 import NewPostThread from "./NewPostThread";
 import ReactPaginate from "react-paginate";
 import { db } from "../firebase";
@@ -10,8 +10,9 @@ function Main() {
   const perPage = 5;
 
   const threadAddRef = useRef(null);
+  const newThreadAddRef = useRef(null);
 
-  const [threadInfo] = useCollection(
+  const [threadInfo, loading] = useCollection(
     db.collection("threads").orderBy("timestamp", "desc")
   );
 
@@ -33,10 +34,23 @@ function Main() {
     });
   };
 
+  var Spinner = require("react-spinkit");
+
+  if (loading) {
+    return (
+      <div className="loadingArea">
+        <div className="loadingInnerArea">
+          <div className="loadingText">Now Loading...</div>
+          <Spinner name="ball-spin-fade-loader" color="purple" fadeIn="none" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div ref={threadAddRef} style={{ paddingTop: 10 }}></div>
-      <TopButtons />
+      <TopButtons newThreadAddRef={newThreadAddRef} />
       <ThreadArea
         threadInfo={threadInfo}
         offset={pagenateInfoList.offset}
@@ -65,6 +79,7 @@ function Main() {
         threadAddRef={threadAddRef}
         setPagenateInforList={setPagenateInforList}
       />
+      <div style={{ paddingBottom: 10 }} ref={newThreadAddRef}></div>
     </div>
   );
 }
