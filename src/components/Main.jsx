@@ -51,6 +51,24 @@ function Main() {
     <div>
       <div ref={threadAddRef} style={{ paddingTop: 10 }}></div>
       <TopButtons newThreadAddRef={newThreadAddRef} />
+      <ReactPaginate
+        pageCount={Math.ceil(threadInfo?.size / perPage)}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={3}
+        onPageChange={handlePageClick}
+        containerClassName="paginateContainer"
+        pageClassName="pageItem"
+        pageLinkClassName="pageLink"
+        activeClassName={"active"}
+        previousLabel={"<<"}
+        nextLabel={">>"}
+        previousClassName="pageItem" // '<'の親要素(li)のクラス名
+        nextClassName="pageItem"
+        disabledClassName="disabled" //先頭or末尾に行ったときにそれ以上戻れ(進め)なくするためのクラス
+        breakLabel={"..."}
+        breakClassName="pageItem" // 上記の「…」のクラス名
+        breakLinkClassName="pageIink" // 「…」の中のリンクにつけるクラス
+      />
       <ThreadArea
         threadInfo={threadInfo}
         offset={pagenateInfoList.offset}

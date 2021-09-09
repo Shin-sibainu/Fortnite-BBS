@@ -242,7 +242,7 @@ table {
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
-  margin-left: 2.2em;
+  margin-left: 0.2em;
 }
 
 .pageItem {
